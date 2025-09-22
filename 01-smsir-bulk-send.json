@@ -1,0 +1,165 @@
+{
+  "name": "Send Bulk Message | SMS.ir",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5be6f25-9297-413d-a5a7-233daaa3b891",
+              "name": "Mobiles",
+              "value": "={{ \n  (function(mobiles) {\n    if (Array.isArray(mobiles)) {\n      return mobiles.map(m => String(m).trim());\n    }\n    if (typeof mobiles === 'number') {\n      return [String(mobiles)];\n    }\n    if (typeof mobiles === 'string') {\n      return mobiles\n        .split(/[\\n,]+/)\n        .map(m => m.trim())\n        .filter(Boolean);\n    }\n    return [];\n  })($json.Mobiles)\n}}",
+              "type": "array"
+            },
+            {
+              "id": "6f0c1301-e30a-49c0-8440-ebb963b43ae5",
+              "name": "ApiKey",
+              "value": "={{ $json.ApiKey }}",
+              "type": "string"
+            },
+            {
+              "id": "b3e60566-0696-4fd8-a85c-984f4690e865",
+              "name": "LineNumber",
+              "value": "={{ $json.LineNumber }}",
+              "type": "number"
+            },
+            {
+              "id": "e87b73f0-f94f-4f23-9e76-691859bc8c32",
+              "name": "MessageText",
+              "value": "={{ $json.MessageText }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "0d6e798a-af87-47a5-aae7-a49b1b384203",
+      "name": "Normalize Inputs"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.sms.ir/v1/send/bulk",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "={{ $json.ApiKey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lineNumber",
+              "value": "={{ $json.LineNumber }}"
+            },
+            {
+              "name": "MessageText",
+              "value": "={{ $json.MessageText }}"
+            },
+            {
+              "name": "Mobiles",
+              "value": "={{ $json.Mobiles }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "f81b2e1d-a5ad-4a6c-a217-b607570d4fab",
+      "name": "SMS.ir Bulk Send"
+    },
+    {
+      "parameters": {
+        "formTitle": "Bulk Send | SMS.ir",
+        "formDescription": "ارسال پیامک گروهی",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "ApiKey",
+              "placeholder": "کلید وب سرویس",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "LineNumber",
+              "fieldType": "number",
+              "placeholder": "خط پیامکی ارسال کننده شما",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "MessageText",
+              "fieldType": "textarea",
+              "placeholder": "متن پیامک در این قسمت قرار می‌گیرد",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Mobiles",
+              "fieldType": "textarea",
+              "placeholder": "9120000001,9120000002,9120000003,...",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "54b340e0-3365-4a6e-bf29-b801239c7cd5",
+      "name": "Bulk SMS Form",
+      "webhookId": "91a7ba91-47af-4b25-831d-4155b3559dff"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Normalize Inputs": {
+      "main": [
+        [
+          {
+            "node": "SMS.ir Bulk Send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bulk SMS Form": {
+      "main": [
+        [
+          {
+            "node": "Normalize Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "386ddb94-d9b7-4088-918e-2fdb4456c30d",
+  "meta": {
+    "instanceId": "9a86b31cef9d20e097e4a205a7fe036ee1f8bf5c0e30e2d629b1c3771ed7a421"
+  },
+  "id": "rPDzQkScoHCUPemN",
+  "tags": []
+}
