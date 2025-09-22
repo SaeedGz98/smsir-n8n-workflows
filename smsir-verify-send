@@ -1,0 +1,163 @@
+{
+  "name": "Send Verify Message | SMS.ir",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Verify Send | SMS.ir",
+        "formDescription": "ارسال پیامک از طریق قالب",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "ApiKey",
+              "placeholder": "کلید وب سرویس",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Mobile",
+              "placeholder": "9120000001",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "TemplateId",
+              "fieldType": "number",
+              "placeholder": "شناسه قالب",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Code",
+              "placeholder": "مقدار متغیر Code در قالب",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -272,
+        -112
+      ],
+      "name": "Verify SMS Form",
+      "id": "2844fd91-3c2c-4663-873c-1307cacdfaf1",
+      "webhookId": "1582bead-e7d2-481b-be3e-10c9b7a947e4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b3f68e92-cd6c-433c-8a6c-df65be065c6a",
+              "name": "ApiKey",
+              "value": "={{ $json.ApiKey }}",
+              "type": "string"
+            },
+            {
+              "id": "8cbfa8ad-4a23-4393-8a8a-9783cfa7553b",
+              "name": "Mobile",
+              "value": "={{ $json.Mobile }}",
+              "type": "string"
+            },
+            {
+              "id": "0c88e486-58db-4318-99ed-c5e73631eaf9",
+              "name": "TemplateId",
+              "value": "={{ $json.TemplateId }}",
+              "type": "number"
+            },
+            {
+              "id": "216c99ff-b11f-422d-bb2f-9ce97f1e2b4a",
+              "name": "Parameters",
+              "value": "={{\n  (function(c){\n    const val = String(c ?? '').trim();\n    return val ? [{ name: 'Code', value: val }] : [];\n  })($json.Code)\n}}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        -112
+      ],
+      "id": "92f1a063-017f-4539-9b96-43f1b6d94585",
+      "name": "Normalize Inputs"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.sms.ir/v1/send/verify",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "={{ $json.ApiKey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Mobile",
+              "value": "={{ $json.Mobile }}"
+            },
+            {
+              "name": "TemplateId",
+              "value": "={{ $json.TemplateId }}"
+            },
+            {
+              "name": "Parameters",
+              "value": "={{ $json.Parameters }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        176,
+        -112
+      ],
+      "id": "3d590433-3c77-4c03-b612-f87f0b0f44bb",
+      "name": "SMS.ir Verify Send"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Verify SMS Form": {
+      "main": [
+        [
+          {
+            "node": "Normalize Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Inputs": {
+      "main": [
+        [
+          {
+            "node": "SMS.ir Verify Send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e7cedcc3-3ac7-4c95-aee5-8dd95e740682",
+  "meta": {
+    "instanceId": "9a86b31cef9d20e097e4a205a7fe036ee1f8bf5c0e30e2d629b1c3771ed7a421"
+  },
+  "id": "UVtPFVF5FmZBea6I",
+  "tags": []
+}
